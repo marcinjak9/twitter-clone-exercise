@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const passport = require("passport");
+const cors = require('cors')
+
 // var bodyParser = require("body-parser");
 
 const app = express();
@@ -15,6 +17,7 @@ const app = express();
 // );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors())
 
 /* Misc */
 // app.use(express.urlencoded()); //Allows us to take data from forms.
