@@ -46,7 +46,7 @@ mongoose
 /* Routing */
 
 const auth = require("./routes/auth");
-app.use("/auth", auth);
+app.use("/auth", cors(), auth);
 const index = require("./routes/index");
 app.use("/", index);
 const tweets = require("./routes/tweets");
