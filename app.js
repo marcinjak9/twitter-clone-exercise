@@ -25,6 +25,7 @@ app.use(express.json()); //Allows us to take data from forms.
 
 /* MONGODB SETUP */
 const uri = process.env.MONGODB_URL;
+const port = process.env.PORT;
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -51,4 +52,4 @@ app.use("/tweets", passport.authenticate("jwt", { session: false }), tweets);
 const users = require("./routes/users");
 app.use("/users",passport.authenticate("jwt", { session: false }), users);
 
-app.listen(3001);
+app.listen(port || 3001);
