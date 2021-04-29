@@ -17,11 +17,13 @@ const app = express();
 // );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors())
+
 
 /* Misc */
 // app.use(express.urlencoded()); //Allows us to take data from forms.
 app.use(express.json()); //Allows us to take data from forms.
+app.use(cors())
+
 
 /* MONGODB SETUP */
 const uri = process.env.MONGODB_URL;
