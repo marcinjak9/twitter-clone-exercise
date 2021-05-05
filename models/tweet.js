@@ -17,6 +17,8 @@ const TweetSchema = new Schema({
 
 TweetSchema.statics.like = function (userID, tweetID, callback) {
   this.findOne({ _id: tweetID })
+    .populate('creator')
+    .populate('liked')
     .then((tweet) => {
       if (tweet.liked.includes(userID)) {
         return callback('Tweet already liked')
@@ -30,6 +32,8 @@ TweetSchema.statics.like = function (userID, tweetID, callback) {
 
 TweetSchema.statics.unlike = function (userID, tweetID, callback) {
   this.findOne({ _id: tweetID })
+    .populate('creator')
+    .populate('liked')
     .then((tweet) => {
       if (!tweet.liked.includes(userID)) {
         return callback('You must like the post first');
