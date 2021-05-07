@@ -18,7 +18,7 @@ router.post('/follow/:id', (req, res) => {
             res.status(500).send("Unable to follow")
         }
         else {
-            res.send("Followed");
+            res.send({ message: "Followed"});
         }
     });
 })
