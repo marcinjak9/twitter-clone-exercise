@@ -15,7 +15,7 @@ router.post('/follow/:id', (req, res) => {
     // const userToFollow = req.body.user_to_follow
     User.follow(req.user._id, req.params.id, (err, user) => {
         if(!user || err) {
-        res.status(500).send("Unable to follow")
+        res.status(500).send({ message: "Unable to follow" })
         }
         else {
             res.send({ message: "Followed" });
