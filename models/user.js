@@ -13,76 +13,60 @@ const UserSchema = new Schema({
         required: true,
         select: false
     },
+    avatar: {
+        type: String,
+        default: ''
+    },
+    bio: {
+        type: String,
+        default: ''
+    },
     name: {
         type: String,
         default: ''
     },
-    // followersCount: {
-    //     type: Number,
-    //     default: 0
-    // },
-    // followingCount: {
-    //     type: Number,
-    //     default: 0
-    // },
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    // likes: [{ type: Schema.Types.ObjectId, ref: 'Tweet' }],
 })
-
-// UserSchema.statics.findOrCreate = function(googleID, familyName, firstName, callback){
-//     //Determine if the account exists, if not create it.
-//     this.findOne({googleID: googleID})
-//     .then((user) => {
-//         if (!user ){
-//             // If the result is null create a new user
-//             this.create({
-//                 name: firstName + " " + familyName,
-//                 email: null, 
-//                 googleID: googleID
-//             })
-//             .then((user) => {
-//                 callback(null, user);
-//             })
-//         } else if (user) {
-//             // If the user does exist return it to the callback
-//             callback(null, user);
-//         }
-//     }) 
-//     .catch((err) => {
-//         callback(err, null);
-//     })
-// } 
 
 UserSchema.statics.follow = function(userAddingID, userToAddID, callback){
     this.findOne({_id : userAddingID})
     .then((userAdding) => {
-        console.log(userAdding, userToAddID)
-        userAdding.following.push(userToAddID);
         // user.save();
         this.findOne({_id : userToAddID})
             .then((userToAdd) => {
+                if (userAdding.following.includes(userToAddID) && userToAdd.followers.includes(userAddingID)) {
+                    return callback('already following')
+                }
+                userAdding.following.push(userToAddID);
                 userToAdd.followers.push(userAddingID)
                 userAdding.save()
-                // userToAdd.save()
+                userToAdd.save()
                 callback(null, userToAdd)
             })
-            .catch((e) => console.log(e))
-        // .then(user => {
-        //     user.followers.push(userAddingID);
-        //     user.save();
-        //     callback(null, user)
-        // })
-        // .catch(e => console.log(e))
+            .catch((e) => callback(e))
     })
-    // .then(() => {
-    //     this.findOne({_id : userToAddID})
-    //     .then(user => {
-    //         user.followers.push(userAddingID);
-    //         user.save();
-    //         callback(null, user)
-    //     })
-    // })
+    .catch(error => callback(error, null))
+}
+
+UserSchema.statics.unfollow = function(userAddingID, userToAddID, callback){
+    this.findOne({_id : userAddingID})
+    .then((userAdding) => {
+        this.findOne({_id : userToAddID})
+            .then((userToAdd) => {
+                if (userAdding.following.includes(userToAddID) && userToAdd.followers.includes(userAddingID)) {
+                    userAdding.following = userAdding.following.filter((f) => f.toString() !== userToAddID);
+                    userToAdd.followers = userToAdd.followers.filter((f) => f.toString() !== userAddingID)
+                    console.log(userAdding)
+                    console.log(userToAdd)
+                    userAdding.save()
+                    userToAdd.save()
+                    return callback(null, userToAdd)
+                }
+                callback('You are not following this user')
+            })
+            .catch((e) => callback(e))
+    })
     .catch(error => callback(error, null))
 }
 

@@ -66,7 +66,7 @@ router.get("/feed", (req, res) => {
     User.findById(req.user._id)
       .then((user) => {
         const following = user.following; //Array
-        Tweet.find({ creator: following })
+        Tweet.find({ creator: [...following, req.user._id] })
           .sort({ created: -1 })
           .then((result) => {
             res.send(result);
